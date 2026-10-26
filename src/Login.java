@@ -59,7 +59,7 @@ public class Login extends JFrame implements ActionListener {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Database connection error!");
+            JOptionPane.showMessageDialog(this, "Database connection error");
         }
     }
 }

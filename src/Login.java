@@ -1,27 +1,22 @@
 import javax.swing.*;
 import java.awt.event.*;
-<<<<<<< HEAD
-=======
-import java.sql.*;
->>>>>>> origin/new-update
+import java.util.Arrays;
 
 public class Login extends JFrame implements ActionListener {
 
+    // Placeholder credentials (replace with a database check later)
+    private static final String VALID_USERNAME = "admin";
+    private static final String VALID_PASSWORD = "1234";
+    private static final int MAX_ATTEMPTS = 3;
 
-<<<<<<< HEAD
-    private JButton LOGIN_btn, Password_btn;
+    private JButton LOGIN_btn, SignUp_btn, Password_btn;
     private JLabel Labelusername, Labelpassword;
     private JTextField usertxt;
     private JPasswordField password;
-=======
-    private JButton LOGIN_btn, SignUp_btn;
-    private JLabel Labelusername, Labelpassword;
-    private JTextField usertxt;
-    private JPasswordField passwordField;
->>>>>>> origin/new-update
+    private char defaultEchoChar;
+    private int attempts = 0;
 
-
-    Login(){
+    Login() {
         setTitle("Log-in Page");
         setSize(400, 450);
         setLayout(null);
@@ -29,64 +24,108 @@ public class Login extends JFrame implements ActionListener {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         Labelusername = new JLabel("Username");
-        Labelusername.setBounds(160,50,100,50);
+        Labelusername.setBounds(160, 50, 100, 30);
         add(Labelusername);
 
         usertxt = new JTextField();
-        usertxt.setBounds(115,90,160,30);
+        usertxt.setBounds(115, 80, 160, 30);
         add(usertxt);
 
-
         Labelpassword = new JLabel("Password");
-<<<<<<< HEAD
-        Labelpassword.setBounds(160,140,100,50);
+        Labelpassword.setBounds(160, 120, 100, 30);
         add(Labelpassword);
 
         password = new JPasswordField();
-        password.setBounds(115,180,160,30);
+        password.setBounds(115, 150, 160, 30);
         add(password);
+        defaultEchoChar = password.getEchoChar();
 
-
-
-
-=======
-        Labelpassword.setBounds(160,120,100,50);
-        add(Labelpassword);
-
-        passwordField = new JPasswordField();
-        passwordField.setBounds(115,160,160,30);
-        add(passwordField);
+        Password_btn = new JButton("Show Password");
+        Password_btn.setBounds(115, 190, 160, 25);
+        add(Password_btn);
 
         LOGIN_btn = new JButton("Log-in");
-        LOGIN_btn.setBounds(130,220,130,30);
+        LOGIN_btn.setBounds(130, 235, 130, 30);
         add(LOGIN_btn);
 
         SignUp_btn = new JButton("Sign-Up");
-        SignUp_btn.setBounds(130,270,130,30);
+        SignUp_btn.setBounds(130, 280, 130, 30);
         add(SignUp_btn);
->>>>>>> origin/new-update
 
+        // Register listeners (without these, nothing happens on click)
+        Password_btn.addActionListener(this);
+        LOGIN_btn.addActionListener(this);
+        SignUp_btn.addActionListener(this);
+        usertxt.addActionListener(this);
+        password.addActionListener(this);   // Enter key submits
     }
-
 
     @Override
     public void actionPerformed(ActionEvent e) {
-<<<<<<< HEAD
+        Object source = e.getSource();
 
-=======
-        String userName = usertxt.getText();
-        String password = passwordField.getText();
-        try{
-            Connection connection = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/fitness_tracker","root", "");
-            PreparedStatement statement = connection.prepareStatement("SELECT username, password FROM users WHERE username = ? AND password = ?");
-            statement.setString(1, usertxt.getText());
-            statement.setString(2, new String(passwordField.getPassword()));
-            ResultSet RS = statement.executeQuery();
-
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Database connection error!");
+        if (source == Password_btn) {
+            togglePasswordVisibility();
+        } else if (source == LOGIN_btn || source == usertxt || source == password) {
+            handleLogin();
+        } else if (source == SignUp_btn) {
+            JOptionPane.showMessageDialog(this, "Sign-up page coming soon.");
         }
->>>>>>> origin/new-update
+    }
+
+    private void togglePasswordVisibility() {
+        if (password.getEchoChar() == (char) 0) {
+            password.setEchoChar(defaultEchoChar);
+            Password_btn.setText("Show Password");
+        } else {
+            password.setEchoChar((char) 0);
+            Password_btn.setText("Hide Password");
+        }
+    }
+
+    private void handleLogin() {
+        String username = usertxt.getText().trim();
+        char[] passChars = password.getPassword();
+        String pass = new String(passChars);
+        Arrays.fill(passChars, '\0');
+
+        if (username.isEmpty() || pass.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                    "Please enter both username and password.",
+                    "Missing Information", JOptionPane.WARNING_MESSAGE);
+            if (username.isEmpty()) {
+                usertxt.requestFocus();
+            } else {
+                password.requestFocus();
+            }
+            return;
+        }
+
+        if (username.equals(VALID_USERNAME) && pass.equals(VALID_PASSWORD)) {
+            JOptionPane.showMessageDialog(this,
+                    "Welcome, " + username + "!",
+                    "Login Successful", JOptionPane.INFORMATION_MESSAGE);
+            dispose();
+        } else {
+            attempts++;
+            int remaining = MAX_ATTEMPTS - attempts;
+
+            if (remaining <= 0) {
+                JOptionPane.showMessageDialog(this,
+                        "Too many failed attempts. The application will be closed.",
+                        "Access Denied", JOptionPane.ERROR_MESSAGE);
+                System.exit(0);
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        "Invalid username or password.\nAttempts remaining: " + remaining,
+                        "Login Failed", JOptionPane.ERROR_MESSAGE);
+                password.setText("");
+                password.requestFocus();
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new Login().setVisible(true));
     }
 }

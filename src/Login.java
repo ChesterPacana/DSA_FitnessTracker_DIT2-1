@@ -1,12 +1,10 @@
 import javax.swing.*;
 import java.awt.event.*;
+import java.sql.*;
 import java.util.Arrays;
 
 public class Login extends JFrame implements ActionListener {
 
-    // Placeholder credentials (replace with a database check later)
-    private static final String VALID_USERNAME = "admin";
-    private static final String VALID_PASSWORD = "1234";
     private static final int MAX_ATTEMPTS = 3;
 
     private JButton LOGIN_btn, SignUp_btn, Password_btn;
@@ -69,7 +67,8 @@ public class Login extends JFrame implements ActionListener {
         } else if (source == LOGIN_btn || source == usertxt || source == password) {
             handleLogin();
         } else if (source == SignUp_btn) {
-            JOptionPane.showMessageDialog(this, "Sign-up page coming soon.");
+            new Register().setVisible(true);
+            dispose();
         }
     }
 
@@ -87,7 +86,7 @@ public class Login extends JFrame implements ActionListener {
         String username = usertxt.getText().trim();
         char[] passChars = password.getPassword();
         String pass = new String(passChars);
-        Arrays.fill(passChars, '\0');
+        Arrays.fill(passChars, (char) 0);
 
         if (username.isEmpty() || pass.isEmpty()) {
             JOptionPane.showMessageDialog(this,
@@ -101,10 +100,29 @@ public class Login extends JFrame implements ActionListener {
             return;
         }
 
-        if (username.equals(VALID_USERNAME) && pass.equals(VALID_PASSWORD)) {
+        // Database check (replaces the hardcoded admin/1234)
+        boolean found = false;
+        try {
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/fitness_tracker", "root", "");
+            PreparedStatement statement = connection.prepareStatement("SELECT username FROM users WHERE username = ? AND password = ?");
+            statement.setString(1, username);
+            statement.setString(2, pass);
+            ResultSet RS = statement.executeQuery();
+            found = RS.next();
+            RS.close();
+            statement.close();
+            connection.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Database connection error!");
+            return;
+        }
+
+        if (found) {
             JOptionPane.showMessageDialog(this,
                     "Welcome, " + username + "!",
                     "Login Successful", JOptionPane.INFORMATION_MESSAGE);
+            new Dashboard(username).setVisible(true);
             dispose();
         } else {
             attempts++;

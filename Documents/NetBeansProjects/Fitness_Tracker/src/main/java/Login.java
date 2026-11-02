@@ -50,12 +50,12 @@ public class Login extends JFrame implements ActionListener {
         SignUp_btn.setBounds(130, 280, 130, 30);
         add(SignUp_btn);
 
-        // Register listeners (without these, nothing happens on click)
+        
         Password_btn.addActionListener(this);
         LOGIN_btn.addActionListener(this);
         SignUp_btn.addActionListener(this);
         usertxt.addActionListener(this);
-        password.addActionListener(this);   // Enter key submits
+        password.addActionListener(this);  
     }
 
     @Override
@@ -100,7 +100,7 @@ public class Login extends JFrame implements ActionListener {
             return;
         }
 
-        // Database check (replaces the hardcoded admin/1234)
+       
         boolean found = false;
         try {
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/fitness_tracker", "root", "");

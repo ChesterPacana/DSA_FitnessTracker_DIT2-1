@@ -217,3 +217,66 @@ public class FitnessTrackerApp extends JFrame implements ActionListener {
         btnGenerateReport.addActionListener(this);
         btnReset.addActionListener(this);
     }
+    
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == btnClearWorkout) {
+            txtWorkoutId.setText("");
+            txtWorkoutName.setText("");
+            txtWorkoutDuration.setText("");
+            txtCaloriesBurned.setText("");
+            txtWorkoutSearch.setText("");
+        } else if (e.getSource() == btnClearMeal) {
+            txtMealId.setText("");
+            txtMealName.setText("");
+            txtMealCalories.setText("");
+            txtNutrition.setText("");
+            txtMealSearch.setText("");
+        } else if (e.getSource() == btnReset) {
+            txtWorkoutId.setText("");
+            txtWorkoutName.setText("");
+            txtWorkoutDuration.setText("");
+            txtCaloriesBurned.setText("");
+            txtWorkoutSearch.setText("");
+            txtMealId.setText("");
+            txtMealName.setText("");
+            txtMealCalories.setText("");
+            txtNutrition.setText("");
+            txtMealSearch.setText("");
+            txtGoalName.setText("");
+            txtGoalTarget.setText("");
+            cmbGoalType.setSelectedIndex(0);
+            cmbReportType.setSelectedIndex(0);
+            txaProgressReport.setText("");
+
+        } else if (e.getSource() == btnAddWorkout) {
+            JOptionPane.showMessageDialog(this,
+                "Workout Saved.");
+
+        } else if (e.getSource() == btnSearchWorkout) {
+            JOptionPane.showMessageDialog(this,
+                "Workout Results:");
+
+        } else if (e.getSource() == btnAddMeal) {
+            JOptionPane.showMessageDialog(this,
+                "Meal Saved.");
+
+        } else if (e.getSource() == btnSearchMeal) {
+            JOptionPane.showMessageDialog(this,
+                "Meal Results: ");
+
+        } else if (e.getSource() == btnSetGoal) {
+            JOptionPane.showMessageDialog(this,
+                "Calories Burned Today: ");
+
+        } else if (e.getSource() == btnGenerateReport) {
+            JOptionPane.showMessageDialog(this,
+                "Progress reports appears here.");
+        }
+    }
+
+    public static void main(String[] args) {
+        FitnessTrackerApp app = new FitnessTrackerApp();
+        app.setVisible(true);
+    }
+}
